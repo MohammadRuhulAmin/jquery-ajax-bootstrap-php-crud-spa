@@ -21,7 +21,7 @@ $(document).ready(function(){
                                 "<td>"+x[i].name +"</td>"+
                                 "<td>" +x[i].email+ "</td>"+
                                 "<td>"+x[i].password +"</td>"+
-                                "<td>"+"<button class='btn btn-warning btn-sm'>Edit</button> "+"<button class='btn btn-danger btn-sm'>Delete</button>"+"</td>"+
+                                "<td>"+"<button class='btn btn-warning btn-sm'>Edit</button> "+"<button class='btn btn-danger btn-sm btn-del' data-sid="+x[i].id+">Delete</button>"+"</td>"+
                              "</tr>";
                 }
                 $('#tbody').html(output);
@@ -63,8 +63,24 @@ $("#btnadd").click(function(e){
         }
           
      });
-
-
-        
     });
+    //Ajax Request for delete
+    $("tbody").on("click",".btn-del",function(){
+        console.log("delete button clicked");
+        let id = $(this).attr("data-sid");
+        // console.log(id);
+        mydata = {sid:id};
+        $.ajax({
+            url:"delete.php",
+            method:"POST",
+            data:JSON.stringify(mydata),
+            success:function(data){
+                console.log(data);
+                $msg = "<div class='alert alert-dark mt-3'>"+ data+"</div>";
+                $('#msg').html($msg);
+                showdata();
+            }
+        });
+    })
+
 });
