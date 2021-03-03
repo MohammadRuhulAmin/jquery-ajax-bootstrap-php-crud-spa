@@ -21,7 +21,7 @@ $(document).ready(function(){
                                 "<td>"+x[i].name +"</td>"+
                                 "<td>" +x[i].email+ "</td>"+
                                 "<td>"+x[i].password +"</td>"+
-                                "<td>"+"<button class='btn btn-warning btn-sm'>Edit</button> "+"<button class='btn btn-danger btn-sm btn-del' data-sid="+x[i].id+">Delete</button>"+"</td>"+
+                                "<td>"+"<button class='btn btn-warning btn-sm btn-edit' data-sid="+x[i].id+">Edit</button> "+"<button class='btn btn-danger btn-sm btn-del' data-sid="+x[i].id+">Delete</button>"+"</td>"+
                              "</tr>";
                 }
                 $('#tbody').html(output);
@@ -38,6 +38,7 @@ $(document).ready(function(){
 
 $("#btnadd").click(function(e){
     e.preventDefault();
+    let stid = $('#stuid').val();
     let nm=$('#nameid').val();
     let em =$('#emailid').val();
     let pw = $('#passwordid').val();
@@ -45,6 +46,7 @@ $("#btnadd").click(function(e){
     // console.log('email : '+em);
     // console.log('password :'+pw);
     mydata = {
+        id:stid,
         name:nm,
         email:em,
         password:pw
@@ -76,11 +78,31 @@ $("#btnadd").click(function(e){
             data:JSON.stringify(mydata),
             success:function(data){
                 console.log(data);
-                $msg = "<div class='alert alert-dark mt-3'>"+ data+"</div>";
-                $('#msg').html($msg);
+                msg = "<div class='alert alert-dark mt-3'>"+ data+"</div>";
+                $('#msg').html(msg);
                 showdata();
             }
         });
     })
+
+    // AJAX Request for Editing Data...!
+    $("tbody").on("click",".btn-edit",function(){
+       // console.log($(this).attr("data-sid")+"edit id");
+       let id = $(this).attr("data-sid");
+       mydata = {sid:id};
+       $.ajax({
+        url:"edit.php",
+        method:"POST",
+        dataType:"Json",
+        data:JSON.stringify(mydata),
+        success:function(data){
+            console.log(data);
+            $('#stuid').val(data.id);
+            $('#nameid').val(data.name);
+            $('#emailid').val(data.email);
+            $('#passwordid').val(data.password);
+        }
+       });
+    });
 
 });
